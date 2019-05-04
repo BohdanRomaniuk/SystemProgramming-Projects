@@ -1,0 +1,360 @@
+﻿<Window x:Class="GraphicEditor.MainWindow"
+        x:Name="MainWindowName"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GraphicEditor"
+        mc:Ignorable="d"
+        Title="Графічний редактор" Height="500" Width="850">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Новий" Command="{Binding ClearCommand}"/>
+                <MenuItem Header="Зберегти" Command="{Binding SaveCommand}" CommandParameter="{Binding ElementName=Sur}"/>
+                <Separator />
+                <MenuItem Header="Закрити" Command="{Binding CloseWindowCommand}" CommandParameter="{Binding ElementName=MainWindowName}"/>
+            </MenuItem>
+            <MenuItem Header="Довідка" ItemsSource="{Binding Hexagones}">
+                <MenuItem Header="Про програму" Command="{Binding AboutCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Bottom">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <GroupBox Header="Функції" Margin="3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Button Content="Олівець" Command="{Binding ChangeModeCommand}" CommandParameter="Pencil" Margin="3"/>
+                            <Button Content="Ластик" Command="{Binding ChangeModeCommand}" CommandParameter="Eraser" Grid.Row="1" Margin="3"/>
+                            <Button Content="Пензель" Command="{Binding ChangeModeCommand}" CommandParameter="Brush" Grid.Row="2" Margin="3"/>
+                            <Button Content="Пряма лінія" Command="{Binding ChangeModeCommand}" CommandParameter="Line" Grid.Row="3" Margin="3"/>
+                            <Button Content="Прямокутник" Command="{Binding ChangeModeCommand}" CommandParameter="Rectangle" Grid.Row="4" Margin="3"/>
+                            <Button Content="Еліпс" Command="{Binding ChangeModeCommand}" CommandParameter="Ellipse" Grid.Row="5" Margin="3"/>
+                            <Button Content="Текст" Command="{Binding ChangeModeCommand}" CommandParameter="Text" Grid.Row="6" Margin="3"/>
+                            <TextBox Text="{Binding Text}" Grid.Row="7" Margin="3"/>
+
+                            <Button Content="Назад" Command="{Binding UndoCommand}" Grid.Row="9" Margin="3"/>
+                            <Button Content="Очистити" Command="{Binding ClearCommand}" Grid.Row="10" Margin="3"/>
+                            <Label Content="Товщина:" Grid.Row="11" FontWeight="Bold"/>
+                            <Slider Value="{Binding Thickness}" Minimum="1" Maximum="20" Grid.Row="12" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Область малювання" Grid.Column="1" Margin="3" >
+                        <ItemsControl Name="Sur" ItemsSource="{Binding Figures}" >
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate >
+                                    <Canvas Name="Surface" IsItemsHost="True" Background="Transparent">
+                                        <Canvas.InputBindings>
+                                            <MouseBinding Gesture="LeftClick" Command="{Binding DrawClickCommand}" CommandParameter="{Binding ElementName=Surface}" />
+                                        </Canvas.InputBindings>
+                                    </Canvas>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </GroupBox>
+                </Grid>
+                <GroupBox Header="Кольори" Grid.Row="1" Margin="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Margin="3,3,10,3">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Rectangle Width="20" Height="20" Fill="{Binding CurrentColor}" Stroke="Gray"/>
+                            <Rectangle Width="20" Height="20" Fill="{Binding FillColor}" Margin="0,3,0,0" Grid.Row="1" Grid.Column="1" Stroke="Gray"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#000000" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#000000" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#000000"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#FFFFFF" Grid.Row="1" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#FFFFFF" Stroke="Gray"  >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#FFFFFF"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#7f817f" Grid.Column="1" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#7f817f" Stroke="Gray"  >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#7f817f"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#bfc0c0" Grid.Row="1" Grid.Column="1" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#bfc0c0" Stroke="Gray"  >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#bfc0c0"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#7f0200" Grid.Row="0" Grid.Column="2" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#7f0200" Stroke="Gray"  >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#7f0200"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#df0c10" Grid.Row="1" Grid.Column="2" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#df0c10" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#df0c10"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#7d7e01" Grid.Row="0" Grid.Column="3" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#7d7e01" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#7d7e01"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#fffc02" Grid.Row="1" Grid.Column="3" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#fffc02" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#fffc02"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#008003" Grid.Row="0" Grid.Column="4" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#008003" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#008003"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#04fd03" Grid.Row="1" Grid.Column="4" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#04fd03" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#04fd03"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#038082" Grid.Row="0" Grid.Column="5" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#038082" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#038082"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#00feff" Grid.Row="1" Grid.Column="5" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#00feff" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#00feff"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#020081" Grid.Row="0" Grid.Column="6" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#020081" Stroke="Gray" >
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#020081"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#0101fb" Grid.Row="1" Grid.Column="6" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#0101fb" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#0101fb"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#81027f" Grid.Row="0" Grid.Column="7" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#81027f" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#81027f"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#ff02fe" Grid.Row="1" Grid.Column="7" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#ff02fe" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#ff02fe"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#818240" Grid.Row="0" Grid.Column="8" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#818240" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#818240"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#fffe82" Grid.Row="1" Grid.Column="8" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#fffe82" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#fffe82"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#004040" Grid.Row="0" Grid.Column="9" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#004040" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#004040"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Command="{Binding ChangeColorCommand}" 
+                            CommandParameter="#00fe84" Grid.Row="1" Grid.Column="9" Margin="3">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Rectangle Width="20" Height="20" Fill="#00fe84" Stroke="Gray">
+                                            <Rectangle.InputBindings>
+                                                <MouseBinding Gesture="RightClick" Command="{Binding SelectFillColorCommand}" CommandParameter="#00fe84"/>
+                                            </Rectangle.InputBindings>
+                                        </Rectangle>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
