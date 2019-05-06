@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Excel"
+        xmlns:behaviors="clr-namespace:Excel.Helpers"
         mc:Ignorable="d"
         x:Name="MainWindowName"
         Title="MainWindow" Height="450" Width="800">
@@ -38,11 +39,15 @@
                 </Grid>
             </GroupBox>
             <GroupBox Header="Дані" Margin="3" Grid.Row="1">
-                <DataGrid ItemsSource="{Binding Source=MyList}" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
-                        <DataGridTextColumn Header="Date" Binding="{Binding Date}"/>
-                    </DataGrid.Columns>
+                <DataGrid AutoGenerateColumns="True" 
+                          ItemsSource="{Binding Table}"
+                          SelectedIndex="{Binding SelectedIndex}" 
+                          CurrentCell="{Binding SelectedColumn, Mode=OneWayToSource}"
+                          behaviors:DataGridBehavior.DisplayRowNumber="True">
+                    <DataGrid.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding NewRowCommand}"/>
+                        <KeyBinding Modifiers="Ctrl" Key="V" Command="{Binding PasteCommand}" />
+                    </DataGrid.InputBindings>
                 </DataGrid>
             </GroupBox>
         </Grid>
